@@ -1,0 +1,88 @@
+image : docker:latest
+
+variables:
+   REPO_NAME: "patronage/confr_dotnet"
+   DEPLOYMENT_SERVER: 78.9.97.14
+   INTEGRATION_USER: dotnet-int
+
+before_script:
+    - 'docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY'
+
+after_script:
+    - 'docker logout $CI_REGISTRY'
+
+stages:
+    - build
+    - test
+    - deploy
+
+build:
+    stage: build
+    script:
+    - 'docker build -f Dockerfile .'
+
+test-api:
+    stage: test
+    script:
+    - docker build -f Intive.ConfR.API.Tests/Dockerfile .
+
+test-infrastructure:
+    stage: test
+    script:
+    - docker build -f Intive.ConfR.Infrastructure.Tests/Dockerfile .
+
+test-domain:
+    stage: test
+    script:
+    - docker build -f Intive.ConfR.Domain.Tests/Dockerfile .
+
+test-application:
+    stage: test
+    script:
+    - docker build -f Intive.ConfR.Application.Tests/Dockerfile .
+
+deploy-dev:
+    stage: deploy
+    only:
+        refs:
+         - develop
+    script:
+    - 'docker build --tag $CI_REGISTRY/$REPO_NAME/dev:latest --file Dockerfile .'
+    - 'docker push $CI_REGISTRY/$REPO_NAME/dev:latest'
+
+build-int:
+  only:
+    refs:
+      - develop
+  stage: build
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF -t $CI_REGISTRY_IMAGE:integration .
+    - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF
+    - docker push $CI_REGISTRY_IMAGE:integration
+
+deploy-int:
+  only:
+    refs:
+      - develop
+  before_script:
+    - ''
+  after_script:
+    -  ''
+  image: kroniak/ssh-client:3.9
+  stage: deploy
+  script:
+    - mkdir -p ~/.ssh && echo "${INTEGRATION_USER_PRIVATE_KEY}" | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "${DEPLOYMENT_SERVER}">> ~/.ssh/known_hosts
+    - scp docker-compose.prod.yml "${INTEGRATION_USER}@${DEPLOYMENT_SERVER}:docker-compose.yml"
+    - ssh "${INTEGRATION_USER}"@"${DEPLOYMENT_SERVER}" "docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
+                                                        docker-compose pull && docker-compose up -d &&
+                                                        docker logout $CI_REGISTRY"
+
+deploy-prod:
+    stage: deploy
+    only:
+        refs:
+        - master
+    script:
+    - 'docker build --tag $CI_REGISTRY/$REPO_NAME/prod:latest --file Dockerfile .'
+    - 'docker push $CI_REGISTRY/$REPO_NAME/prod:latest'

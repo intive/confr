@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  intive.confr.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AuthorizationEnabled=${AUTHORIZATION}
+      - PhotoStorage__ConnectionData__ConnectionString=X
+      - ConnectionStrings__ConfRDatabase=XX;
+    ports:
+      - "80"
+
+  storage-emulator:
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+
+  db:
+    ports:
+      - 1435:1433
+    environment:
+      - SA_PASSWORD=MyPassword001
+      - ACCEPT_EULA=Y

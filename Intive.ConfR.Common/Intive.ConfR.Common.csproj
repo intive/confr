@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--<Import Project="..\Northwind.CodeAnalysis.targets" />-->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Intive.ConfR.Common</AssemblyName>
+    <RootNamespace>Intive.ConfR.Common</RootNamespace>
+    <PackageId>Intive.ConfR.Common</PackageId>
+    <Authors>Intive.ConfR.Common</Authors>
+    <Company>Intive.ConfR.Common</Company>
+    <Product>Intive.ConfR.Common</Product>
+  </PropertyGroup>
+</Project>

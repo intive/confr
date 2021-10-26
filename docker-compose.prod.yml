@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  intive.confr.api:
+    image: intive-patronage.westeurope.cloudapp.azure.com:4567/patronage/confr_dotnet:integration
+    networks:
+      - web
+      - backend
+    labels:
+      - "traefik.backend=dotnet"
+      - "traefik.docker.network=web"
+      - "traefik.port=80"
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:dotnet.patronage.intive-projects.com"
+    depends_on:
+      - storage-emulator
+
+  storage-emulator:
+    image: arafato/azurite
+    networks:
+      - backend
+
+networks:
+  web:
+    external: true
+  backend:

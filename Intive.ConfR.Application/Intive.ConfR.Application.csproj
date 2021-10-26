@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--<Import Project="..\Northwind.CodeAnalysis.targets" />-->
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>Intive.ConfR.Application</AssemblyName>
+    <RootNamespace>Intive.ConfR.Application</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.60.1" />
+    <PackageReference Include="FluentValidation" Version="8.1.3" />
+    <PackageReference Include="MediatR" Version="6.0.0" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0006" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Intive.ConfR.Domain\Intive.ConfR.Domain.csproj" />
+    <ProjectReference Include="..\Intive.ConfR.Persistence\Intive.ConfR.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

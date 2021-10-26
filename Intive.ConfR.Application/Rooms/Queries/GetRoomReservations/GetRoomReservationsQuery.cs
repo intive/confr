@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using AutoMapper;
+using Intive.ConfR.Application.Interfaces.Mapping;
+using Intive.ConfR.Domain.Entities;
+using MediatR;
+
+namespace Intive.ConfR.Application.Rooms.Queries.GetRoomReservations
+{
+    public class GetRoomReservationsQuery : IRequest<RoomReservationsViewModel>, IHaveCustomMapping
+    {
+        public string Email { get; set; }
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+
+        public void CreateMappings(Profile configuration)
+        {
+            configuration.CreateMap<GetRoomReservationsQuery, ScheduleRequest>()
+                .ForMember(sr => sr.Schedules,
+                    opt => opt.MapFrom(grrq => new List<string> { grrq.Email }))
+                .ForMember(sr => sr.StartTime,
+                    opt => opt.MapFrom(grrq => new DateTimeTimeZone
+                    { DateTime = grrq.From }))
+                .ForMember(sr => sr.EndTime,
+                    opt => opt.MapFrom(grrq => new DateTimeTimeZone
+                    { DateTime = grrq.To }));
+        }
+    }
+}

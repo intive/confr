@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Intive.ConfR.Integration.Tests": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "IsTestProject": "true"
+      }
+    }
+  }
+}
